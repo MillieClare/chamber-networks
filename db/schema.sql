@@ -3,6 +3,9 @@ DROP INDEX IF EXISTS chamber_gist;
 DROP TABLE IF EXISTS chambers;
 DROP TABLE IF EXISTS customers;
 
+-- Install and enable postGIS in the database
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 -- Create the chambers table if it doesn't exist
 CREATE TABLE IF NOT EXISTS chambers (
     id VARCHAR(10) PRIMARY KEY,
