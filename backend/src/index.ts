@@ -82,7 +82,7 @@ app.post(
       const getNearestChamberQuery = `
       SELECT id, ST_Distance(
         geom::geography,
-        ST_SetSRID(ST_MakePoint(-0.086013, 51.523641), 4326)::geography
+        ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
         ) AS distance
       FROM chambers
       ORDER BY distance
