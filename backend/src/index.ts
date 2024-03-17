@@ -19,9 +19,9 @@ app.get("/", (req: Request, res: Response) => {
 // Step 1: Find the nearest suitable chamber - provide ID of closest chamber with available capacity
 // Step 2: Add new customer - persist new customers in database
 // Step 3: Update 'used_capacity' to reflect new customer
-// Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
-// Step 5: Check if nearest chamber is at capacity
-// Step 6: Find out if selected chamber is now at capacity after update - alert user if selected chamber is at capacity after customer is added.
+// TODO: Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
+// TODO: Step 5: Check if nearest chamber is at capacity
+// TODO: Step 6: Find out if selected chamber is now at capacity after update - alert user if selected chamber is at capacity after customer is added.
 
 app.post(
   "/find-closest-available-chamber",
@@ -76,6 +76,14 @@ app.post(
         building_longitude,
         selectedChamberId,
       ]);
+
+      // Step 3: Update 'used_capacity' to reflect new customer
+      const updateChamberQuery = `
+      UPDATE chambers
+      SET used_capacity = used_capacity + $1
+      WHERE id = $2;
+    `;
+      await client.query(updateChamberQuery, [10, selectedChamberId]);
 
       res.json({
         success: true,
