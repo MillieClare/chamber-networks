@@ -20,8 +20,8 @@ app.get("/", (req: Request, res: Response) => {
 // Step 2: Add new customer - persist new customers in database
 // Step 3: Update 'used_capacity' to reflect new customer
 // Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
-// TODO: Step 5: Check if nearest chamber is at capacity
-// TODO: Step 6: Find out if selected chamber is now at capacity after update - alert user if selected chamber is at capacity after customer is added.
+// Step 5: Check if nearest chamber is at capacity
+// Step 6: Find out if selected chamber is now at capacity after update - alert user if selected chamber is at capacity after customer is added.
 
 app.post(
   "/find-closest-available-chamber",
@@ -105,10 +105,20 @@ app.post(
       }
       const nearestSelectedChamberId = nearestChamberResult.rows[0].chamberid;
 
+      // Step 5: Check if nearest chamber is at capacity
+      const isNearestChamberAtCapacity =
+        nearestSelectedChamberId === selectedChamberId ? false : true;
+
+      // Step 6: Find out if selected chamber is now at capacity after update
+      const isSelectedChamberAtCapacity =
+        chamberResult.rows[0].usedcapacity === 90 ? true : false;
+
       res.json({
         success: true,
         chamberId: selectedChamberId,
         nearestSelectedChamberId,
+        isNearestChamberAtCapacity,
+        isSelectedChamberAtCapacity,
       });
 
       await client.query("COMMIT"); // Successfully end the transaction
