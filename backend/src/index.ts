@@ -167,6 +167,35 @@ app.get("/chambers", async (req: Request, res: Response) => {
   }
 });
 
+app.get("/capacityAvailable", async (req: Request, res: Response) => {
+  let client: PoolClient | null = null; // Declare client here to make it accessible in all blocks
+
+  try {
+    client = await pool.connect();
+
+    const getCapacityAvailableQuery = `
+    SELECT bool_or(capacity_available) AS capacity_available FROM(
+      SELECT
+      CASE
+        WHEN total_capacity - used_capacity >= 10 THEN true
+        ELSE false
+      END AS capacity_available
+    FROM chambers
+    );
+  `;
+    const capacityAvailable = await client.query(getCapacityAvailableQuery);
+
+    res.json(capacityAvailable.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  } finally {
+    if (client) {
+      client.release(); // Release the client back to the pool
+    }
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is available at http://localhost:${port}`);
 });
