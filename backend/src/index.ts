@@ -14,15 +14,6 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to Express & TypeScript Server");
 });
 
-// Endpoint 1:
-// /find-chamber(?)
-// Step 1: Find the nearest suitable chamber - provide ID of closest chamber with available capacity
-// Step 2: Add new customer - persist new customers in database
-// Step 3: Update 'used_capacity' to reflect new customer
-// Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
-// Step 5: Check if nearest chamber is at capacity
-// Step 6: Find out if selected chamber is now at capacity after update - alert user if selected chamber is at capacity after customer is added.
-
 app.post(
   "/find-closest-available-chamber",
   async (req: Request, res: Response) => {
