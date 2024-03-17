@@ -26,7 +26,13 @@ app.get("/", (req: Request, res: Response) => {
 app.post(
   "/find-closest-available-chamber",
   async (req: Request, res: Response) => {
-    const { building_latitude, building_longitude } = req.body;
+    const {
+      name,
+      street_address,
+      postcode,
+      building_latitude,
+      building_longitude,
+    } = req.body;
 
     let client: PoolClient | null = null; // Declare client here to make it accessible in all blocks
 
@@ -55,6 +61,21 @@ app.post(
         throw new Error("No available chamber found"); // Use throw to jump to the catch block
       }
       const selectedChamberId = chamberResult.rows[0].chamberid;
+
+      // Step 2: Add the new customer
+      const updateAddCustomerQuery = `
+      INSERT INTO customers (customer_name, street_address, postcode, building_latitude, building_longitude, chamberId)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id;
+  `;
+      await client.query(updateAddCustomerQuery, [
+        name,
+        street_address,
+        postcode,
+        building_latitude,
+        building_longitude,
+        selectedChamberId,
+      ]);
 
       res.json({
         success: true,
