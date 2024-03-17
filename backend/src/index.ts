@@ -19,7 +19,7 @@ app.get("/", (req: Request, res: Response) => {
 // Step 1: Find the nearest suitable chamber - provide ID of closest chamber with available capacity
 // Step 2: Add new customer - persist new customers in database
 // Step 3: Update 'used_capacity' to reflect new customer
-// TODO: Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
+// Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
 // TODO: Step 5: Check if nearest chamber is at capacity
 // TODO: Step 6: Find out if selected chamber is now at capacity after update - alert user if selected chamber is at capacity after customer is added.
 
@@ -85,9 +85,30 @@ app.post(
     `;
       await client.query(updateChamberQuery, [10, selectedChamberId]);
 
+      // Step 4: Find nearest chamber irrespective of capacity (check if selected chamber is also nearest chamber) - alert user is nearest chamber doesn't have capacity but still provide next closest that does.
+      const getNearestChamberQuery = `
+      SELECT id, ST_Distance(
+        geom::geography,
+        ST_SetSRID(ST_MakePoint(-0.086013, 51.523641), 4326)::geography
+        ) AS distance
+      FROM chambers
+      ORDER BY distance
+      LIMIT 1;
+    `;
+      const nearestChamberResult = await client.query(getNearestChamberQuery, [
+        building_longitude,
+        building_latitude,
+      ]);
+
+      if (nearestChamberResult.rows.length === 0) {
+        throw new Error("No chambers found"); // Use throw to jump to the catch block
+      }
+      const nearestSelectedChamberId = nearestChamberResult.rows[0].chamberid;
+
       res.json({
         success: true,
         chamberId: selectedChamberId,
+        nearestSelectedChamberId,
       });
 
       await client.query("COMMIT"); // Successfully end the transaction
