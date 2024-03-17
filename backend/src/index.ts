@@ -137,6 +137,36 @@ app.post(
   }
 );
 
+app.get("/chambers", async (req: Request, res: Response) => {
+  let client: PoolClient | null = null; // Declare client here to make it accessible in all blocks
+
+  try {
+    client = await pool.connect();
+
+    const getAllChambersQuery = `
+    SELECT id,
+      total_capacity,
+      used_capacity,
+      latitude,
+      longitude,
+      total_capacity - used_capacity AS available_capacity
+    FROM chambers ORDER BY id;
+  `;
+    const allChambersAndAvailableCapacities = await client.query(
+      getAllChambersQuery
+    );
+
+    res.json({ chambers: allChambersAndAvailableCapacities.rows });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  } finally {
+    if (client) {
+      client.release();
+    }
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is available at http://localhost:${port}`);
 });
