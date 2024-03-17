@@ -26,6 +26,7 @@ app.post(
     } = req.body;
 
     let client: PoolClient | null = null; // Declare client here to make it accessible in all blocks
+    let capacityAvailable: boolean = true;
 
     try {
       client = await pool.connect(); // Initialize client in the try block
@@ -49,6 +50,7 @@ app.post(
       ]);
 
       if (chamberResult.rows.length === 0) {
+        capacityAvailable = false;
         throw new Error("No available chamber found"); // Use throw to jump to the catch block
       }
       const selectedChamberId = chamberResult.rows[0].chamberid;
@@ -92,6 +94,7 @@ app.post(
       ]);
 
       if (nearestChamberResult.rows.length === 0) {
+        capacityAvailable = false;
         throw new Error("No chambers found"); // Use throw to jump to the catch block
       }
       const nearestSelectedChamberId = nearestChamberResult.rows[0].chamberid;
@@ -118,7 +121,15 @@ app.post(
       if (client) {
         await client.query("ROLLBACK"); // Rollback the transaction in case of any error
       }
-      res.status(500).send("Server error");
+      !capacityAvailable
+        ? res.json({
+            success: false,
+            chamberId: null,
+            nearestSelectedChamberId: null,
+            isNearestChamberAtCapacity: null,
+            isSelectedChamberAtCapacity: null,
+          })
+        : res.status(500).send("Server error");
     } finally {
       if (client) {
         client.release(); // Release the client back to the pool
