@@ -34,7 +34,7 @@ app.post(
 
       // Step 1: Find the nearest suitable chamber
       const getChamberQuery = `
-      SELECT id AS ChamberID, ST_Distance(
+      SELECT id, ST_Distance(
         geom::geography,
         ST_SetSRID(ST_MakePoint($1, $2), 4326)::geography
       ) AS distance,
@@ -53,14 +53,14 @@ app.post(
         capacityAvailable = false;
         throw new Error("No available chamber found"); // Use throw to jump to the catch block
       }
-      const selectedChamberId = chamberResult.rows[0].chamberid;
+      const selectedChamberId = chamberResult.rows[0].id;
 
       // Step 2: Add the new customer
       const updateAddCustomerQuery = `
       INSERT INTO customers (customer_name, street_address, postcode, building_latitude, building_longitude, chamberId)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id;
-  `;
+    `;
       await client.query(updateAddCustomerQuery, [
         name,
         street_address,
@@ -97,7 +97,7 @@ app.post(
         capacityAvailable = false;
         throw new Error("No chambers found"); // Use throw to jump to the catch block
       }
-      const nearestSelectedChamberId = nearestChamberResult.rows[0].chamberid;
+      const nearestSelectedChamberId = nearestChamberResult.rows[0].id;
 
       // Step 5: Check if nearest chamber is at capacity
       const isNearestChamberAtCapacity =
@@ -106,6 +106,7 @@ app.post(
       // Step 6: Find out if selected chamber is now at capacity after update
       const isSelectedChamberAtCapacity =
         chamberResult.rows[0].usedcapacity === 90 ? true : false;
+      await client.query("COMMIT"); // Successfully end the transaction
 
       res.json({
         success: true,
@@ -114,8 +115,6 @@ app.post(
         isNearestChamberAtCapacity,
         isSelectedChamberAtCapacity,
       });
-
-      await client.query("COMMIT"); // Successfully end the transaction
     } catch (err) {
       console.error(err);
       if (client) {
