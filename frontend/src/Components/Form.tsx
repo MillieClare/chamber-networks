@@ -18,6 +18,60 @@ function Form() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const customerData: CustomerData = {
+      name,
+      street_address,
+      postcode,
+      building_latitude,
+      building_longitude,
+    };
+    console.log({ customerData });
+
+    try {
+      const response = await fetch(
+        "http://localhost:8000/find-closest-available-chamber",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(customerData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      const {
+        chamberId,
+        isNearestChamberAtCapacity,
+        isSelectedChamberAtCapacity,
+        nearestSelectedChamberId,
+      } = result;
+
+      if (isNearestChamberAtCapacity) {
+        console.log(
+          `The nearest chamber (${nearestSelectedChamberId}) to the customer has no capacity, we have assigned the customer to the closest chamber which does have capacity: ${chamberId}.`
+        );
+      }
+
+      if (isSelectedChamberAtCapacity) {
+        console.log(
+          `We have added the customer to the closest chamber: ${chamberId} - please note that this chamber is now full and no more customers can be allocated.`
+        );
+      }
+
+      console.log({
+        chamberId,
+        isNearestChamberAtCapacity,
+        isSelectedChamberAtCapacity,
+        nearestSelectedChamberId,
+      });
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   };
 
   return (
