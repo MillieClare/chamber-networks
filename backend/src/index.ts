@@ -2,11 +2,15 @@ import express, { Request, Response, Application } from "express";
 import dotenv from "dotenv";
 import { PoolClient } from "pg";
 import pool from "./db";
+import cors from "cors";
 
 dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT || 8000;
+
+// Enable CORS requests
+app.use(cors());
 
 app.use(express.json());
 
