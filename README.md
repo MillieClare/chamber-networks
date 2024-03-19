@@ -35,8 +35,9 @@ To get started:
 
 # Candidate Content
 
-![Vorboss](https://imgur.com/a/t2AMyRT)  
-(I found this near my home!)
+![](https://github.com/vorboss-hiring/MillieClare180324/blob/main/frontend/src/assets/vorboss_plate.jpg)
+
+(^ I found this on a street near my house!)
 
 Hi!
 
@@ -79,3 +80,8 @@ I am the first to admit that I am not the best designer. However, I wanted the i
 
 - The two colours are 'Coyote' (#d3976f) and 'Botanical Night' (#0c4444). Coyote is the colour closest I could get to the neutral orange shade of the Vorboss logo, and Botanical Night is the colour I believe to be used in the header at the top of the Vorboss homepage.
 - As for the font, I chose [Red Hat Display](https://fonts.google.com/specimen/Red+Hat+Display), a sans-serif font that I thought looked close to the one used on the Vorboss website.
+
+
+## Finally
+I have included a demo for the page below.
+![](https://github.com/vorboss-hiring/MillieClare180324/blob/main/frontend/src/assets/project-test.gif)
