@@ -72,6 +72,29 @@ function Form() {
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
+
+    try {
+      const response = await fetch("http://localhost:8000/capacityAvailable", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+
+      if (!result.capacity_available) {
+        console.log(
+          "There are no more available chambers. We cannot accept any new customers"
+        );
+      }
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+    }
   };
 
   return (

@@ -109,7 +109,8 @@ app.post(
 
       // Step 6: Find out if selected chamber is now at capacity after update
       const isSelectedChamberAtCapacity =
-        chamberResult.rows[0].usedcapacity === 90 ? true : false;
+        chamberResult.rows[0].used_capacity === 90 ? true : false;
+
       await client.query("COMMIT"); // Successfully end the transaction
 
       res.json({
