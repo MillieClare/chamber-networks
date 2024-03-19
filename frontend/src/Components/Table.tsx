@@ -13,6 +13,8 @@ interface ChamberData {
 function Table() {
   const [data, setData] = useState<ChamberData[]>([]);
 
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<string>("");
+
   useEffect(() => {
     // Function to fetch data
     const fetchData = async () => {
@@ -22,6 +24,8 @@ function Table() {
         console.log(result);
 
         setData(result.chambers); // Set your state with the result
+        const currentTimestamp = new Date().toLocaleString(); // Adjust format as needed
+        setLastRefreshedAt(currentTimestamp);
         console.log(result.chambers);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -40,6 +44,7 @@ function Table() {
       {data ? (
         <div>
           <h2>Chamber Assignment Details</h2>
+          <h3>Last refreshed at: {lastRefreshedAt}</h3>
           <table className={styles.container}>
             <thead>
               <tr>

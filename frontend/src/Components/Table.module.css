@@ -19,6 +19,16 @@ h2 {
   color: #222222;
 }
 
+h3 {
+  font-size: 20px;
+  font-weight: 300;
+  text-align: left;
+  display: block;
+  line-height: 1em;
+  padding-bottom: 1em;
+  color: #222222;
+}
+
 .container th h1 {
   font-weight: bold;
   font-size: 1em;

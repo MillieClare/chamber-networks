@@ -56,13 +56,13 @@ function Form() {
       setSelectedChamberId(chamberId);
 
       if (isNearestChamberAtCapacity) {
-        console.log(
+        alert(
           `The nearest chamber (${nearestSelectedChamberId}) to the customer has no capacity, we have assigned the customer to the closest chamber which does have capacity: ${chamberId}.`
         );
       }
 
       if (isSelectedChamberAtCapacity) {
-        console.log(
+        alert(
           `We have added the customer to the closest chamber: ${chamberId} - please note that this chamber is now full and no more customers can be allocated.`
         );
       }
@@ -172,7 +172,7 @@ function Form() {
       <div>
         {selectedChamberId && (
           <div className={styles.assignedCustomer}>
-            Your customer, {name}, has been assigned to chamber
+            Your customer, {name}, has been assigned to chamber{" "}
             {selectedChamberId}
           </div>
         )}
