@@ -35,7 +35,7 @@ To get started:
 
 # Candidate Content
 
-![Vorboss](frontend\src\assets\vorboss_plate.jpg)  
+![Vorboss](https://imgur.com/a/t2AMyRT)  
 (I found this near my home!)
 
 Hi!
