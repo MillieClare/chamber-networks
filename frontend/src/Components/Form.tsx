@@ -108,6 +108,11 @@ function Form({ onSubmit }: FormProps) {
     }
 
     onSubmit();
+    setName("");
+    setStreetAddress("");
+    setPostcode("");
+    setLatitude("");
+    setLongitude("");
   };
 
   return (
