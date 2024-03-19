@@ -16,6 +16,8 @@ function Form() {
   const [building_latitude, setLatitude] = useState<string>("");
   const [building_longitude, setLongitude] = useState<string>("");
 
+  const [selectedChamberId, setSelectedChamberId] = useState<string>("");
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const customerData: CustomerData = {
@@ -50,6 +52,8 @@ function Form() {
         isSelectedChamberAtCapacity,
         nearestSelectedChamberId,
       } = result;
+
+      setSelectedChamberId(chamberId);
 
       if (isNearestChamberAtCapacity) {
         console.log(
@@ -165,6 +169,14 @@ function Form() {
           </div>
         </div>
       </form>
+      <div>
+        {selectedChamberId && (
+          <div className={styles.assignedCustomer}>
+            Your customer, {name}, has been assigned to chamber
+            {selectedChamberId}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
