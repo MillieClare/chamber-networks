@@ -155,7 +155,7 @@ app.get("/chambers", async (req: Request, res: Response) => {
       latitude,
       longitude,
       total_capacity - used_capacity AS available_capacity
-    FROM chambers ORDER BY id;
+    FROM chambers ORDER BY used_capacity;
   `;
     const allChambersAndAvailableCapacities = await client.query(
       getAllChambersQuery
