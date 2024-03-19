@@ -10,13 +10,17 @@ interface ChamberData {
   longitude: number;
 }
 
-function Table() {
+interface TableProps {
+  shouldReload: boolean;
+  onReload: () => void;
+}
+
+function Table({ shouldReload, onReload }: TableProps) {
   const [data, setData] = useState<ChamberData[]>([]);
 
   const [lastRefreshedAt, setLastRefreshedAt] = useState<string>("");
 
   useEffect(() => {
-    // Function to fetch data
     const fetchData = async () => {
       try {
         const response = await fetch("http://localhost:8000/chambers");
@@ -30,10 +34,12 @@ function Table() {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+      onReload();
     };
 
     fetchData(); // Call the function to fetch data
-  }, []); // Empty dependency array means this effect runs once on mount
+    onReload(); // Reset the reload trigger in App.tsx
+  }, [shouldReload]); // Empty dependency array means this effect runs once on mount
 
   return (
     <div

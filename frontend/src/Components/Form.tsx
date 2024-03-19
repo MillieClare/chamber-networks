@@ -8,8 +8,11 @@ interface CustomerData {
   building_latitude: string;
   building_longitude: string;
 }
+interface FormProps {
+  onSubmit: () => void;
+}
 
-function Form() {
+function Form({ onSubmit }: FormProps) {
   const [name, setName] = useState<string>("");
   const [street_address, setStreetAddress] = useState<string>("");
   const [postcode, setPostcode] = useState<string>("");
@@ -18,7 +21,9 @@ function Form() {
 
   const [selectedChamberId, setSelectedChamberId] = useState<string>("");
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
     const customerData: CustomerData = {
       name,
@@ -47,6 +52,7 @@ function Form() {
 
       const result = await response.json();
       const {
+        success,
         chamberId,
         isNearestChamberAtCapacity,
         isSelectedChamberAtCapacity,
@@ -68,6 +74,7 @@ function Form() {
       }
 
       console.log({
+        success,
         chamberId,
         isNearestChamberAtCapacity,
         isSelectedChamberAtCapacity,
@@ -99,6 +106,8 @@ function Form() {
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
     }
+
+    onSubmit();
   };
 
   return (
